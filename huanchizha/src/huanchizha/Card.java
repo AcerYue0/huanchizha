@@ -1,7 +1,6 @@
 package huanchizha;
 
-import java.net.URL;
-
+@SuppressWarnings("serial")
 public abstract class Card extends ImageButton {
 	private int costPoint;
 	private Id info;

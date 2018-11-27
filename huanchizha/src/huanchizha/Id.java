@@ -1,15 +1,34 @@
 package huanchizha;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Id{
 	private int id;
 	private CardId name;
-	
+	private CardPath path;
+	Integer[] ids = new Integer[] {
+			0, 1, 3, 6, 
+			1200, 1201, 1300, 1301, 1500, 1501, 
+			200, 201, 202, 203, 
+			300, 301, 302, 303, 
+			400, 401, 402, 403, 404, 
+			500, 501, 502, 503, 504, 
+			600, 
+			10402
+	};
+	List<Integer> idStorage = Arrays.asList(ids);
+	List<CardId> cardList = Arrays.asList(CardId.values());
+	List<CardPath> cardPathList = Arrays.asList(CardPath.values());
 	public Id(int id) {
-		this.id = id;
+		this.setId(id);
+		this.name = (CardId) cardList.get(idStorage.indexOf(id));
+		this.path = (CardPath) cardPathList.get(idStorage.indexOf(id));
 	}
-	public Id(int id, CardId name){
-		this.id = id;
+	public Id(int id, CardId name, CardPath path){
+		this.setId(id);
 		this.name = name;
+		this.path = path;
 	}
 	@Override
 	public String toString() {
@@ -80,5 +99,11 @@ public class Id{
 			default:
 				throw new Error("No such card at id " + name);
 		}
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
 	}
 }

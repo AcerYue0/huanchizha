@@ -2,6 +2,7 @@ package huanchizha;
 
 import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
@@ -25,12 +26,7 @@ public class Main extends JFrame {
 			}
 		});
 	}
-	int mBPX = 538, mBPY = 591, CDSw = 120, CDSh = 180;
-	Point midBtnPosition = new Point(538, 591);
-	/**
-	 * Create frame.
-	 */
-	public Main() {
+	public void setMainFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1200, 840);
 		contentPane = new JPanel();
@@ -40,20 +36,54 @@ public class Main extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		int inhand = 10;
-		ArrayList<EngravedRune> Edeck = new ArrayList<EngravedRune>();
-		ArrayList<Item> Ideck = new ArrayList<Item>();
-		for(int i = 0; i < inhand; i++) {
-			Random ran = new Random();
-			int id = ran.nextInt(22);
-			if(id < 16) {
-				EngravedRune temp = new EngravedRune(new Id(id), Main.class.getResource("/resources/icon.png"));
-				Edeck.add(temp);
-			}
-			else{
-				Item temp = new Item(new Id(id), Main.class.getResource("/resources/icon.png"));
-				Ideck.add(temp);
-			}
+	}
+	/**
+	 * Card deck constructing
+	 */
+	int mBPX = 538, mBPY = 591, CDSw = 120, CDSh = 180;
+	int inhand = 10;
+	Point midBtnPosition = new Point(538, 591);
+	Integer[] ids = new Integer[] {
+			0, 1, 3, 6, 
+			1200, 1201, 1300, 1301, 1500, 1501, 
+			200, 201, 202, 203, 
+			300, 301, 302, 303, 
+			400, 401, 402, 403, 404, 
+			500, 501, 502, 503, 504, 
+			600, 
+			10402
+	};
+	Random ran = new Random();
+	List<Integer> idStorage = Arrays.asList(ids);
+	List<CardId> cardList = Arrays.asList(CardId.values());
+	List<CardPath> cardPathList = Arrays.asList(CardPath.values());
+	ArrayList<EngravedRune> Edeck = new ArrayList<EngravedRune>();
+	ArrayList<Item> Ideck = new ArrayList<Item>();
+	
+	@SuppressWarnings("unlikely-arg-type")
+	public void addNewCard() {
+		int id = ran.nextInt(25) + 4;
+		CardPath cardpath = null;
+		if(cardList.contains(idStorage.get(id))) {
+			cardpath = (CardPath) cardPathList.get((int)idStorage.indexOf(id));
+		}
+		if(id >= 4 && id <= 9) {
+			Item temp = new Item(new Id((int)idStorage.get(id)), cardpath.path);
+			Ideck.add(temp);
+		}
+		else{
+			EngravedRune temp = new EngravedRune(new Id((int)idStorage.get(id)), cardpath.path);
+			Edeck.add(temp);
+		}
+	}
+	/**
+	 * Create frame.
+	 */
+	public Main() {
+		setMainFrame();
+		int random_card = ran.nextInt(10) + 1;
+		for(int i = 0; i < random_card; i++) {
+			addNewCard();
 		}
 		int card_value = 1;
 		for(Card card : Edeck) {
@@ -67,7 +97,9 @@ public class Main extends JFrame {
 			card_value++;
 		}
 	}
-	/**components attributes setting**/
+	/**
+	 * components attributes setting
+	 */
 	public void components_setting(Card card, int num) {
 		card.setBackground(Color.WHITE);
 		if(num == 1) {
@@ -87,7 +119,9 @@ public class Main extends JFrame {
 			}
 		}
 	}
-	/**card motion in player's round**/
+	/**
+	 * card motion in player's round
+	 */
 	public void card_motion(Card card) {
 		card.addMouseListener(new MouseAdapter() {
 			@Override

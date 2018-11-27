@@ -1,6 +1,6 @@
 package huanchizha;
 
-public class PointCard {
+public class PointCard extends Card{
 	private int point;
 	public PointCard() {
 		super();
@@ -10,5 +10,9 @@ public class PointCard {
 	}
 	public void setPoint(int point) {
 		this.point = point;
+	}
+	@Override
+	public void CardEffect() {
+		
 	}
 }

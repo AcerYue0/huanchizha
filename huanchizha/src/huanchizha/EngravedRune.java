@@ -4,6 +4,7 @@ import java.net.URL;
 
 import javax.swing.ImageIcon;
 
+@SuppressWarnings("serial")
 public class EngravedRune extends Card{
 	int evadePoint;
 	int accuracyPoint;
@@ -12,9 +13,9 @@ public class EngravedRune extends Card{
 	public void CardEffect() {
 		
 	}
-	public EngravedRune(Id id, URL filename){
+	public EngravedRune(Id id, URL path){
 		super();
-		ImageIcon icon = new ImageIcon(filename);
+		ImageIcon icon = new ImageIcon(path);
 		image = icon.getImage();
 		imageObserver = icon.getImageObserver();
 		setInfo(id);
