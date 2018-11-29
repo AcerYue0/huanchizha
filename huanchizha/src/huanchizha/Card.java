@@ -4,6 +4,7 @@ package huanchizha;
 public abstract class Card extends ImageButton {
 	private int costPoint;
 	private Id info;
+	private boolean clicked;
 	
 	public abstract void CardEffect();
 	public Card(){
@@ -20,5 +21,11 @@ public abstract class Card extends ImageButton {
 	}
 	public void setInfo(Id info) {
 		this.info = info;
+	}
+	public boolean isClicked() {
+		return clicked;
+	}
+	public void setClicked(boolean clicked) {
+		this.clicked = clicked;
 	}
 }

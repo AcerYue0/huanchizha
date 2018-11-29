@@ -1,104 +1,60 @@
 package huanchizha;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
 public class Id{
 	private int id;
-	private CardId name;
-	private CardPath path;
-	Integer[] ids = new Integer[] {
-			0, 1, 3, 6, 
-			1200, 1201, 1300, 1301, 1500, 1501, 
-			200, 201, 202, 203, 
-			300, 301, 302, 303, 
-			400, 401, 402, 403, 404, 
-			500, 501, 502, 503, 504, 
-			600, 
-			10402
+	private URL path;
+	URL[] paths = new URL[] {
+	Main.class.getResource("/resources/Kedama.png"),
+	Main.class.getResource("/resources/PointSmall.png"),
+	Main.class.getResource("/resources/PointMidium.png"),
+	Main.class.getResource("/resources/PointLarge.png"),
+	Main.class.getResource("/resources/Wen.png"),
+	Main.class.getResource("/resources/Sakuya.png"),
+	Main.class.getResource("/resources/Marisa.png"),
+	Main.class.getResource("/resources/Remilia.png"),
+	Main.class.getResource("/resources/Reimu.png"),
+	Main.class.getResource("/resources/Tenshi.png"),
+	Main.class.getResource("/resources/Teyi.png"),
+	Main.class.getResource("/resources/Chen.png"),
+	Main.class.getResource("/resources/Yamaxanadu.png"),
+	Main.class.getResource("/resources/Suwako.png"),
+	Main.class.getResource("/resources/Ran.png"),
+	Main.class.getResource("/resources/Youmu.png"),
+	Main.class.getResource("/resources/Flandre.png"), 
+	Main.class.getResource("/resources/Meirin.png"),
+	Main.class.getResource("/resources/Komaji.png"), 
+	Main.class.getResource("/resources/Kanako.png"), 
+	Main.class.getResource("/resources/Alice.png"),
+	Main.class.getResource("/resources/Inaba.png"),
+	Main.class.getResource("/resources/Yuyuko.png"),
+	Main.class.getResource("/resources/Sanae.png"), 
+	Main.class.getResource("/resources/Murasaki.png"), 
+	Main.class.getResource("/resources/Suika.png"), 
+	Main.class.getResource("/resources/Keine.png"), 
+	Main.class.getResource("/resources/Mokou.png"),
+	Main.class.getResource("/resources/Yuugi.png"),
+	Main.class.getResource("/resources/Ninngyou.png")
 	};
-	List<Integer> idStorage = Arrays.asList(ids);
-	List<CardId> cardList = Arrays.asList(CardId.values());
-	List<CardPath> cardPathList = Arrays.asList(CardPath.values());
+	List<URL> pathStorage = Arrays.asList(paths);
+	
 	public Id(int id) {
 		this.setId(id);
-		this.name = (CardId) cardList.get(idStorage.indexOf(id));
-		this.path = (CardPath) cardPathList.get(idStorage.indexOf(id));
+		this.setPath(paths[id]);
 	}
-	public Id(int id, CardId name, CardPath path){
-		this.setId(id);
-		this.name = name;
+	public Id(int id, URL path){
+		this.id = id;
 		this.path = path;
 	}
-	@Override
-	public String toString() {
-		return String.valueOf(name);
+	
+	public URL getPath() {
+		return path;
 	}
-	public static int getCardId(CardId name) {
-		switch(name) {
-			case Kedama:
-				return 0;
-			case PointSmall:
-				return 1;
-			case PointMidium:
-				return 3;
-			case PointLarge:
-				return 6;
-			case Wen:
-				return 1200;
-			case Sakuya:
-				return 1201;
-			case Marisa:
-				return 1300;
-			case Remilia:
-				return 1301;
-			case Reimu:
-				return 1500;
-			case Tenshi:
-				return 1501;
-			case Teyi:
-				return 200;
-			case Chen:
-				return 201;
-			case Yamaxanadu:
-				return 202;
-			case Suwako:
-				return 203;
-			case Ran:
-				return 300;
-			case Youmu:
-				return 301;
-			case Flandre:
-				return 302;
-			case Meirin:
-				return 303;
-			case Komaji:
-				return 400;
-			case Kanako:
-				return 401;
-			case Alice:
-				return 402;
-			case Ninngyou:
-				return 10402;
-			case Inaba:
-				return 403;
-			case Yuyuko:
-				return 404;
-			case Sanae:
-				return 500;
-			case Murasaki:
-				return 501;
-			case Suika:
-				return 502;
-			case Keine:
-				return 503;
-			case Mokou:
-				return 504;
-			case Yuugi:
-				return 600;
-			default:
-				throw new Error("No such card at id " + name);
-		}
+	public void setPath(URL path) {
+		this.path = path;
 	}
 	public int getId() {
 		return id;

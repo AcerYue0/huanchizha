@@ -9,7 +9,6 @@ public class EngravedRune extends Card{
 	int evadePoint;
 	int accuracyPoint;
 	int valuePoint;
-	
 	public void CardEffect() {
 		
 	}

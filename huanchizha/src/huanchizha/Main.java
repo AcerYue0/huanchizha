@@ -28,7 +28,7 @@ public class Main extends JFrame {
 	}
 	public void setMainFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1200, 840);
+		setBounds(100, 100, 1440, 900);
 		contentPane = new JPanel();
 		contentPane.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		contentPane.setRequestFocusEnabled(false);
@@ -40,39 +40,22 @@ public class Main extends JFrame {
 	/**
 	 * Card deck constructing
 	 */
-	int mBPX = 538, mBPY = 591, CDSw = 120, CDSh = 180;
+	int mBPX = 30, mBPY = 630, CDSw = 120, CDSh = 180;
 	int inhand = 10;
-	Point midBtnPosition = new Point(538, 591);
-	Integer[] ids = new Integer[] {
-			0, 1, 3, 6, 
-			1200, 1201, 1300, 1301, 1500, 1501, 
-			200, 201, 202, 203, 
-			300, 301, 302, 303, 
-			400, 401, 402, 403, 404, 
-			500, 501, 502, 503, 504, 
-			600, 
-			10402
-	};
+	Point firstBtnPosition = new Point(30, 630);
 	Random ran = new Random();
-	List<Integer> idStorage = Arrays.asList(ids);
-	List<CardId> cardList = Arrays.asList(CardId.values());
-	List<CardPath> cardPathList = Arrays.asList(CardPath.values());
 	ArrayList<EngravedRune> Edeck = new ArrayList<EngravedRune>();
 	ArrayList<Item> Ideck = new ArrayList<Item>();
-	
-	@SuppressWarnings("unlikely-arg-type")
+	Id idTemp;
 	public void addNewCard() {
 		int id = ran.nextInt(25) + 4;
-		CardPath cardpath = null;
-		if(cardList.contains(idStorage.get(id))) {
-			cardpath = (CardPath) cardPathList.get((int)idStorage.indexOf(id));
-		}
+		idTemp = new Id(id);
 		if(id >= 4 && id <= 9) {
-			Item temp = new Item(new Id((int)idStorage.get(id)), cardpath.path);
+			Item temp = new Item(idTemp, idTemp.getPath());
 			Ideck.add(temp);
 		}
 		else{
-			EngravedRune temp = new EngravedRune(new Id((int)idStorage.get(id)), cardpath.path);
+			EngravedRune temp = new EngravedRune(idTemp, idTemp.getPath());
 			Edeck.add(temp);
 		}
 	}
@@ -81,19 +64,19 @@ public class Main extends JFrame {
 	 */
 	public Main() {
 		setMainFrame();
-		int random_card = ran.nextInt(10) + 1;
+		int random_card = ran.nextInt(1) + 9;
 		for(int i = 0; i < random_card; i++) {
 			addNewCard();
 		}
-		int card_value = 1;
+		int card_value = 0;
 		for(Card card : Edeck) {
-			card_motion(card);
 			components_setting(card, card_value);
+			card_motion(card);
 			card_value++;
 		}
 		for(Card card : Ideck) {
-			card_motion(card);
 			components_setting(card, card_value);
+			card_motion(card);
 			card_value++;
 		}
 	}
@@ -102,28 +85,20 @@ public class Main extends JFrame {
 	 */
 	public void components_setting(Card card, int num) {
 		card.setBackground(Color.WHITE);
-		if(num == 1) {
+		if(num == 0) {
 			card.setBounds(mBPX, mBPY, CDSw, CDSh);
 			contentPane.add(card);
 		}
 		else {
-			switch(num % 2) {
-				case 0:
-				    card.setBounds(mBPX - num * 40, mBPY, CDSw, CDSh);
-				    contentPane.add(card);
-				    break;
-				case 1:
-				    card.setBounds(mBPX + num * 40, mBPY, CDSw, CDSh);
-				    contentPane.add(card);
-				    break;
-			}
+			card.setBounds(mBPX + num * 125, mBPY, CDSw, CDSh);
+		    contentPane.add(card);
 		}
 	}
 	/**
 	 * card motion in player's round
 	 */
 	public void card_motion(Card card) {
-		card.addMouseListener(new MouseAdapter() {
+		/*card.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				Point originPt = new Point(card.getX(), card.getY());
@@ -142,7 +117,22 @@ public class Main extends JFrame {
 				card.setLocation(newLocation);
                 repaint();
 			}
+		});*/
+		card.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				Point originPt = new Point(card.getX(), card.getY());
+				Point newLocation;
+				if(!card.isClicked()) {
+					newLocation = new Point(originPt.x, originPt.y - 20);
+					card.setClicked(true);
+				}
+				else {
+					newLocation = new Point(originPt.x, originPt.y + 20);
+					card.setClicked(false);
+				}
+				card.setLocation(newLocation);
+                repaint();
+			}
 		});
-		
 	}
 }
