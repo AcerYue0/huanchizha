@@ -94,7 +94,6 @@ public class Main extends JFrame {
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 600, 450);
-		setContentPane(MenuFrame);
 		MenuFrame = new JPanel();
 		MenuFrame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		MenuFrame.setRequestFocusEnabled(false);
@@ -104,6 +103,7 @@ public class Main extends JFrame {
 		tabbedPane.setBounds(0, 39, 584, 28);
 		tabbedPane.setFont(new Font("微軟正黑體", Font.PLAIN, 15));
 		MenuFrame.add(tabbedPane);
+		setContentPane(MenuFrame);
 	}
 
 	/**
