@@ -63,9 +63,9 @@ public class Main extends JFrame {
 	static String[] targetLevelOutputString2 = { "分", "pt.", "ptくらいです。" };
 	static String[] targetPanelString = { "目標等級", "Target Level", "狙いレベル" };
 	static String[] levelUpPanelString = { "提升等級", "Level Up", "レベル上がる" };
-	static String[] levelUpOutputReachMaxLevel = { String.format("到達3000等！\n這是目前版本的最高重生等級囉"),
-			String.format("Reach level 3000! \nThis is the highest rebirth level of the current version."),
-			String.format("レベル3000に到着しました！\nこれは現在のバージョンの最高の再生レベルです") };
+	static String[] levelUpOutputReachMaxLevel = { String.format("到達3001等！\n這是目前版本的最高重生等級囉"),
+			String.format("Reach level 3001! \nThis is the highest rebirth level of the current version."),
+			String.format("レベル3001に到着しました！\nこれは現在のバージョンの最高の再生レベルです") };
 	static String[] levelUpOutputString1 = { "結算後提升", "Increase ", "決済後、" };
 	static String[] levelUpOutputString2 = { String.format("等\n並距離下個等級約"),
 			String.format(" levels after settlement,\nAnd about "), String.format("レベルを追加しました。\nつきのレベルとの差は") };
@@ -267,6 +267,7 @@ public class Main extends JFrame {
 		//Calculate button click
 		calcBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				int flag = 0;
 				errorMessage = 0; 			//regular error message combine up
 				errorBiggerThanZero = 0;	//negative number error message combine up
 				levelUp = 0; 				//total level increase
@@ -296,6 +297,9 @@ public class Main extends JFrame {
 						if (tLevel < 0) {
 							errorBiggerThanZero += 4;
 						}
+						else if(tLevel > 3001) {
+							flag = 1;
+						}
 						break;
 					case 1:
 						score = Long.parseLong(scoreInput.getText().replace(",", ""));
@@ -311,7 +315,11 @@ public class Main extends JFrame {
 				} else {
 					switch (tabbedPane.getSelectedIndex()) {
 					case 0:
-						targetPanelActivity();
+						if(flag == 0) {
+							targetPanelActivity();
+						} else {
+							resultLabel.setText(languageCode == 0 ? "目標等級不能超過3001。" : languageCode == 1 ? "Target level cannot bigger than 3001." : "狙いレベル3001超えるには入力できません。");
+						}
 						break;
 					case 1:
 						levelUpPanelActivity();
@@ -363,7 +371,7 @@ public class Main extends JFrame {
 					+ 250) * ((float)(100 - nPercent) / 100));
 		}
 		//Output
-		if (nLevel + levelUp >= 3000) {
+		if (nLevel + levelUp >= 3001) {
 			resultLabel.setText(levelUpOutputReachMaxLevel[languageCode]);
 		} else {
 			resultLabel.setText(levelUpOutputString1[languageCode] + levelUp + levelUpOutputString2[languageCode]
