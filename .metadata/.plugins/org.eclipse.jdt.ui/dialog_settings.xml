@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<item value="JavaSE-1.8" key="org.eclipse.jdt.ui.last.selected.execution.enviroment"/>
-	<item value="D:\Code\Java" key="org.eclipse.jdt.ui.last.external.project"/>
+	<item value="D:\Code\C\java\DM Probability Simulator" key="org.eclipse.jdt.ui.last.external.project"/>
 	<section name="FatJarPackageWizard">
 		<item value="D:\Code\C\java" key="FatJarPackageWizardPage.ANTSCRIPT_LOCATION"/>
 		<item value="Main - DMCalc" key="FatJarPackageWizardPage.LAUNCH_CONFIGURATION_SELECTION_NAME"/>

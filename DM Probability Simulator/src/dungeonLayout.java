@@ -240,7 +240,7 @@ public class dungeonLayout extends JFrame {
 		try {
 			buttonIcon = ImageIO.read(image);
 		} catch (IOException e1) {
-			e1.printStackTrace();
+			System.out.println("No such file found, please contact us to fix out.");
 		}
 	}
 }
