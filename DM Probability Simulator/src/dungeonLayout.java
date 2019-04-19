@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -14,16 +15,20 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
 import java.net.URL;
 
 import javax.swing.JSeparator;
+
 import java.awt.Color;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
 
 @SuppressWarnings("serial")
 public class dungeonLayout extends JFrame {
@@ -33,6 +38,8 @@ public class dungeonLayout extends JFrame {
 	static BufferedImage buttonIcon;
 	static int imageButtonState;
 	static int normalRoomStartY;
+	static String dungeonSizeString[] = {"3x3", "3x4", "3x5", "4x3", "4x4", "4x5", "5x3", "5x4", "5x5", "6x3", "6x4", "6x5"};
+	static List<String> dungeonSizeList = Arrays.asList(dungeonSizeString);
 
 	private static JPanel contentPane;
 	private static JTextField bossRoom, heroValue;
@@ -40,6 +47,8 @@ public class dungeonLayout extends JFrame {
 	private static JSeparator separator = new JSeparator();
 	private static List<JButton> dungeonEntrance = new ArrayList<JButton>();
 	private static JButton calculate = new JButton();
+	private static JLabel heroValueLabel = new JLabel();
+	private static JComboBox<String> dungeonSize = new JComboBox<String>();
 
 	static NumberFormat format = NumberFormat.getNumberInstance();
 	
@@ -64,11 +73,23 @@ public class dungeonLayout extends JFrame {
 	private void componentsInitialize() throws IOException {
 		contentPaneInitialize();
 		bossRoomInitialize();
+		dungeonSizeInitialize();
 		dungeonEntranceInitialize();
 		normalRoomsInitialize();
 		separatorInitialize();
 		calculateButtonInitialize();
 		heroValueTextBoxInitialize();
+		heroValueLabelInitialize();
+	}
+
+	private void dungeonSizeInitialize() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void heroValueLabelInitialize() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private void contentPaneInitialize() {
@@ -111,7 +132,7 @@ public class dungeonLayout extends JFrame {
 		}
 	}
 
-	private void dungeonEntranceInitialize() throws IOException {
+	private void dungeonEntranceInitialize(){
 		JButtonInitialize();
 		normalRoomStartY = 40;
 		for(JButton i : dungeonEntrance) {
@@ -149,7 +170,7 @@ public class dungeonLayout extends JFrame {
 	private void heroValueTextBoxInitialize() {
 		heroValue = new JFormattedTextField(format);
 		heroValue.setBackground(Color.WHITE);
-		heroValue.setBounds(130, 490, 100, 25);
+		heroValue.setBounds(280, 490, 100, 25);
 		heroValue.setFont(new Font("·L³n¥¿¶ÂÅé", Font.PLAIN, 13));
 		heroValue.setHorizontalAlignment(SwingConstants.RIGHT);
 		contentPane.add(heroValue);
@@ -164,11 +185,7 @@ public class dungeonLayout extends JFrame {
 	private void dungeonEntranceListener(final JButton Button) {
 		Button.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
-		    	try {
-					changeIcon(Button);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+		    	changeIcon(Button);
 		    }
 		});
 	}
@@ -176,17 +193,27 @@ public class dungeonLayout extends JFrame {
 	private void JButtonListener(JButton Button) {
 		Button.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
-		    	dungeonSimulation();
+		    	if(activateEntranceCheck()){
+			    	dungeonSimulation();
+		    	}
+		    	else{
+		    		
+		    	}
 		    }
 		});
 	}
 	
+	protected boolean activateEntranceCheck() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	private void dungeonSimulation() {
 		
 		//TODO logic emulation
 	}
 
-	protected void changeIcon(JButton Button) throws IOException {
+	protected void changeIcon(JButton Button){
 		switch(imageButtonState) {
 		case 0:
 			setRedIcon(Button);
@@ -197,15 +224,23 @@ public class dungeonLayout extends JFrame {
 		}
 	}
 
-	private void setGrayIcon(JButton Button) throws IOException {
-		buttonIcon = ImageIO.read(imageXMarkGray);
+	private void setGrayIcon(JButton Button){
+		setIcon(imageXMarkGray);
 		Button.setIcon(new ImageIcon(buttonIcon));
 		imageButtonState = 0;
 	}
 
-	private void setRedIcon(JButton Button) throws IOException {
-		buttonIcon = ImageIO.read(imageXMarkRed);
+	private void setRedIcon(JButton Button){
+		setIcon(imageXMarkRed);
 		Button.setIcon(new ImageIcon(buttonIcon));
 		imageButtonState = 1;
+	}
+
+	private void setIcon(URL image) {
+		try {
+			buttonIcon = ImageIO.read(image);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 	}
 }
