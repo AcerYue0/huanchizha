@@ -350,7 +350,7 @@ public class Main extends JFrame {
 	
 	//Calculate for target level
 	public void targetPanelActivity() {
-		for (int i = (int) nLevel; i <= (int) tLevel; i++) {
+		for (int i = (int) nLevel; i < (int) tLevel; i++) {
 			scoreRequire = (((75 * Math.pow(i - 1, 2)) + (250 * (i - 1)) + 250) * ((float)(100 - nPercent) / 100)); //Formula
 			sum += scoreRequire;
 			nPercent = 0;
