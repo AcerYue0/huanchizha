@@ -1,28 +1,16 @@
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-
-import java.net.URL;
-
-import javax.swing.JSeparator;
-
-import java.awt.Color;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -31,14 +19,23 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 @SuppressWarnings("serial")
 public class dungeonLayout extends JFrame {
 	static URL imageXMarkGray = dungeonLayout.class.getResource("xMarkGray.png");
 	static URL imageXMarkRed = dungeonLayout.class.getResource("xMarkRed.png");
 	static BufferedImage buttonIcon;
-	static int dungeonSizeY = 0, dungeonSizeX = 0, entranceState = 1, relicState = 1;
+	static int entranceState = 1;
+	static DungeonState dungeonState = new DungeonState(6, 5, 'M', RelicState.NoRelic);
+	static int dungeonSizeY = 0, dungeonSizeX = 0;	//X = depth, Y = width
 	static String dungeonSizeString[] = { 
 			" 3x3", " 3x4(U)", " 3x4(D)", " 3x5",
 			" 4x3", " 4x4(U)", " 4x4(D)", " 4x5",
@@ -46,7 +43,6 @@ public class dungeonLayout extends JFrame {
 			" 6x3", " 6x4(U)", " 6x4(D)", " 6x5" 
 	};
 	static String entranceCountString[] = {" 1", " 3"};
-	static Point dungeonSizeState;
 	static NumberFormat format = NumberFormat.getNumberInstance();
 
 	private static JPanel main;
@@ -203,14 +199,14 @@ public class dungeonLayout extends JFrame {
 		main.add(bossRoom);
 	}
 
-	private void normalRoomsInitialize(int newDungeonHeight, int newDungeonDeep, int startX, int startY) {
+	private void normalRoomsInitialize(int newDungeonHeight, int newDungeonDepth, int startX, int startY) {
 		removeRooms();
 		dungeonSizeY = newDungeonHeight;
-		dungeonSizeX = newDungeonDeep;
+		dungeonSizeX = newDungeonDepth;
 		componentsSetNormalRoomStartY = startY;
 		for (int i = 0; i < newDungeonHeight; i++) {
 			componentsSetNormalRoomStartX = startX;
-			for (int j = 0; j < newDungeonDeep; j++) {
+			for (int j = 0; j < newDungeonDepth; j++) {
 				normalRoom[i][j] = new JTextField();
 				normalRoom[i][j].setHorizontalAlignment(SwingConstants.CENTER);
 				normalRoom[i][j].setEditable(false);
@@ -319,13 +315,12 @@ public class dungeonLayout extends JFrame {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					String item = comboBox.getSelectedItem().toString();
-					int newH = Character.getNumericValue(item.charAt(3));
-					int newV = Character.getNumericValue(item.charAt(1));
-					dungeonSizeState = new Point(newV, newH);
-					char position = (item.length() > 5) ? item.charAt(5) : 'M';
-					componentsSetNormalRoomStartX = 260 + (newV - 1) * 80;
-					componentsSetNormalRoomStartY = (newH == 3 || position == 'D'? 120 : 40);
-					normalRoomsInitialize(newH, newV, componentsSetNormalRoomStartX, componentsSetNormalRoomStartY);
+					dungeonState.setDepthX(Character.getNumericValue(item.charAt(1)));
+					dungeonState.setWidthY(Character.getNumericValue(item.charAt(3)));
+					dungeonState.setPosition((item.length() > 5) ? item.charAt(5) : 'M');
+					componentsSetNormalRoomStartX = 260 + (dungeonState.getDepthX() - 1) * 80;
+					componentsSetNormalRoomStartY = (dungeonState.getWidthY() == 3 || dungeonState.getPosition() == 'D'? 120 : 40);
+					normalRoomsInitialize(dungeonState.getWidthY(), dungeonState.getDepthX(), componentsSetNormalRoomStartX, componentsSetNormalRoomStartY);
 			    }
 			}
 		});
@@ -373,13 +368,13 @@ public class dungeonLayout extends JFrame {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					switch(RadioButton.getText()) {
 					case "無神器":
-						relicState = 0;
+						dungeonState.setRelicState(RelicState.NoRelic);
 						break;
 					case "偽造地宮":
-						relicState = 1;
+						dungeonState.setRelicState(RelicState.FakeMap);
 						break;
 					case "真地宮":
-						relicState = 2;
+						dungeonState.setRelicState(RelicState.RealMap);
 						break;
 					}
 				}
@@ -388,7 +383,7 @@ public class dungeonLayout extends JFrame {
 	}
 
 	private void dungeonSimulation() {
-		Simulation sim = new Simulation(entranceState, relicState, dungeonSizeState, Integer.parseInt(heroValue.getText().replaceAll("[^0-9]", "")));
+		Simulation sim = new Simulation(entranceState, dungeonState, Integer.parseInt(heroValue.getText().replaceAll("[^0-9]", "")));
 		sim.startDungeonSimulating();
 		sim.replaceProbebilityOf(normalRoom);
 		errorLabel.setText("Simulate Complete.");
