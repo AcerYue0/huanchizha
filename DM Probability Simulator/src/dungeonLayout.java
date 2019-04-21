@@ -1,5 +1,6 @@
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -24,9 +26,9 @@ import java.awt.Color;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -36,7 +38,6 @@ public class dungeonLayout extends JFrame {
 	static URL imageXMarkGray = dungeonLayout.class.getResource("xMarkGray.png");
 	static URL imageXMarkRed = dungeonLayout.class.getResource("xMarkRed.png");
 	static BufferedImage buttonIcon;
-	static int componentsSetNormalRoomStartY, componentsSetNormalRoomStartX;
 	static int dungeonSizeY = 0, dungeonSizeX = 0, entranceState = 1, relicState = 1;
 	static String dungeonSizeString[] = { 
 			" 3x3", " 3x4(U)", " 3x4(D)", " 3x5",
@@ -45,19 +46,24 @@ public class dungeonLayout extends JFrame {
 			" 6x3", " 6x4(U)", " 6x4(D)", " 6x5" 
 	};
 	static String entranceCountString[] = {" 1", " 3"};
+	static Point dungeonSizeState;
+	static NumberFormat format = NumberFormat.getNumberInstance();
 
 	private static JPanel main;
-	private static JTextField bossRoom, heroValue;
+	private static JTextField bossRoom;
+	private static JFormattedTextField heroValue = new JFormattedTextField(format);
 	private static JLabel heroValueLabel, dungeonSizeLabel, errorLabel, entranceCountLabel;
 	private static JTextField[][] normalRoom = new JTextField[5][6];
+	private static int componentsSetNormalRoomStartY, componentsSetNormalRoomStartX;
 	private static JSeparator separator = new JSeparator();
 	private static List<JLabel> dungeonEntrance = new ArrayList<JLabel>();
 	private static JButton calculate = new JButton();
 	private static JComboBox<String> dungeonSize = new JComboBox<String>();
 	private static JComboBox<String> entranceCount = new JComboBox<String>();
-	private static JCheckBox relicStateCheck = new JCheckBox();
-
-	static NumberFormat format = NumberFormat.getNumberInstance();
+	private static JRadioButton relicStateCheck = new JRadioButton("無神器");
+	private static JRadioButton relicFakeMapCheck = new JRadioButton("偽造地宮");
+	private static JRadioButton relicRealMapCheck = new JRadioButton("真地宮");
+	private static ButtonGroup relicCheckGroup = new ButtonGroup();
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -90,7 +96,44 @@ public class dungeonLayout extends JFrame {
 		dungeonSizeLabelInitialize();
 		entranceCountInitialize();
 		entranceCountLabelInitialize();
+		relicFakeMapCheckInitialize();
+		relicRealMapCheckInitialize();
 		relicStateCheckInitialize();
+		relicCheckGroupInitialize();
+	}
+
+	private void relicRealMapCheckInitialize() {
+		relicStateCheckListener(relicRealMapCheck);
+		relicRealMapCheck.setBounds(140, 400, 100, 25);
+		relicRealMapCheck.setFont(new Font("微軟正黑體", Font.PLAIN, 15));
+		relicRealMapCheck.setAlignmentX(RIGHT_ALIGNMENT);
+		relicRealMapCheck.setBackground(Color.WHITE);
+		main.add(relicRealMapCheck);
+	}
+
+	private void relicFakeMapCheckInitialize() {
+		relicStateCheckListener(relicFakeMapCheck);
+		relicFakeMapCheck.setBounds(140, 370, 100, 25);
+		relicFakeMapCheck.setFont(new Font("微軟正黑體", Font.PLAIN, 15));
+		relicFakeMapCheck.setAlignmentX(RIGHT_ALIGNMENT);
+		relicFakeMapCheck.setBackground(Color.WHITE);
+		main.add(relicFakeMapCheck);
+	}
+
+	private void relicStateCheckInitialize() {
+		relicStateCheckListener(relicStateCheck);
+		relicStateCheck.setBounds(140, 340, 100, 25);
+		relicStateCheck.setFont(new Font("微軟正黑體", Font.PLAIN, 15));
+		relicStateCheck.setAlignmentX(RIGHT_ALIGNMENT);
+		relicStateCheck.setBackground(Color.WHITE);
+		main.add(relicStateCheck);
+	}
+
+	private void relicCheckGroupInitialize() {
+		relicCheckGroup.add(relicFakeMapCheck);
+		relicCheckGroup.add(relicRealMapCheck);
+		relicCheckGroup.add(relicStateCheck);
+		relicCheckGroup.setSelected(relicStateCheck.getModel(), true);
 	}
 
 	private void contentPaneInitialize() {
@@ -146,16 +189,6 @@ public class dungeonLayout extends JFrame {
 		entranceCount.setAlignmentX(RIGHT_ALIGNMENT);
 		entranceCount.setSelectedIndex(0);
 		main.add(entranceCount);
-	}
-	
-	private void relicStateCheckInitialize() {
-		relicStateCheckListener(relicStateCheck);
-		relicStateCheck.setBounds(40, 400, 100, 25);
-		relicStateCheck.setFont(new Font("微軟正黑體", Font.PLAIN, 15));
-		relicStateCheck.setAlignmentX(RIGHT_ALIGNMENT);
-		relicStateCheck.setText("偽造地宮?");
-		relicStateCheck.setBackground(Color.WHITE);
-		main.add(relicStateCheck);
 	}
 
 	private void bossRoomInitialize() {
@@ -238,7 +271,6 @@ public class dungeonLayout extends JFrame {
 	}
 
 	private void heroValueTextBoxInitialize() {
-		heroValue = new JFormattedTextField(format);
 		heroValue.setBackground(Color.WHITE);
 		heroValue.setBounds(240, 490, 100, 25);
 		heroValue.setFont(new Font("微軟正黑體", Font.PLAIN, 13));
@@ -289,6 +321,7 @@ public class dungeonLayout extends JFrame {
 					String item = comboBox.getSelectedItem().toString();
 					int newH = Character.getNumericValue(item.charAt(3));
 					int newV = Character.getNumericValue(item.charAt(1));
+					dungeonSizeState = new Point(newV, newH);
 					char position = (item.length() > 5) ? item.charAt(5) : 'M';
 					componentsSetNormalRoomStartX = 260 + (newV - 1) * 80;
 					componentsSetNormalRoomStartY = (newH == 3 || position == 'D'? 120 : 40);
@@ -333,23 +366,32 @@ public class dungeonLayout extends JFrame {
 		});
 	}
 
-	private void relicStateCheckListener(JCheckBox checkBox) {
+	private void relicStateCheckListener(JRadioButton RadioButton) {
 		relicStateCheck.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
-					relicState = 0;
-				} else if (e.getStateChange() == ItemEvent.DESELECTED) {
-					relicState = 1;
+					switch(RadioButton.getText()) {
+					case "無神器":
+						relicState = 0;
+						break;
+					case "偽造地宮":
+						relicState = 1;
+						break;
+					case "真地宮":
+						relicState = 2;
+						break;
+					}
 				}
-				System.out.println(relicState);
 			}
 		});
 	}
 
 	private void dungeonSimulation() {
-		Simulation sim = new Simulation(entranceState, relicState);
+		Simulation sim = new Simulation(entranceState, relicState, dungeonSizeState, Integer.parseInt(heroValue.getText().replaceAll("[^0-9]", "")));
 		sim.startDungeonSimulating();
+		sim.replaceProbebilityOf(normalRoom);
+		errorLabel.setText("Simulate Complete.");
 	}
 
 	private void setGrayIcon(JLabel Label) {
