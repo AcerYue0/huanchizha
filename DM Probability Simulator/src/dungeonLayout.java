@@ -1,21 +1,18 @@
 import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.InputMethodEvent;
-import java.awt.event.InputMethodListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -53,6 +50,7 @@ public class dungeonLayout extends JFrame {
 	};
 	static String entranceCountString[] = {" 1", " 3"};
 	static NumberFormat format = NumberFormat.getNumberInstance();
+	static String address = "leeyuchin2618005@gmail.com";
 
 	private static JPanel main;
 	private static JTextField bossRoom;
@@ -105,6 +103,7 @@ public class dungeonLayout extends JFrame {
 		relicRealMapCheckInitialize();
 		relicStateCheckInitialize();
 		relicCheckGroupInitialize();
+		reportBugsToInitialize();
 	}
 
 	private void relicRealMapCheckInitialize() {
@@ -314,6 +313,26 @@ public class dungeonLayout extends JFrame {
 		for (int i = 0; i < value; i++) {
 			dungeonEntrance.add(new JLabel());
 		}
+	}
+
+	private void reportBugsToInitialize() {
+		JLabel lblReportBugsTo = new JLabel("<html><br><font size=2><a href=#>" + address + "</a></font></html>");
+		lblReportBugsTo.setVerticalAlignment(SwingConstants.BOTTOM);
+		lblReportBugsTo.setText("Bugs report: leeyuchin2681005@gmail.com");
+		lblReportBugsTo.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblReportBugsTo.setFont(new Font("·L³n¥¿¶ÂÅé", Font.PLAIN, 12));
+		lblReportBugsTo.setBounds(550, 535, 250, 24);
+		lblReportBugsTo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		lblReportBugsTo.addMouseListener(new MouseAdapter() {
+		    @Override
+		    public void mouseClicked(MouseEvent e) {
+		        try {
+		            Desktop.getDesktop().mail(new URI("mailto:" + address + "?subject=Bug%20report"));
+		        } catch (URISyntaxException | IOException ex) {
+		        }
+		    }
+		});
+		main.add(lblReportBugsTo);
 	}
 
 	private void JButtonListener(JButton Button) {
