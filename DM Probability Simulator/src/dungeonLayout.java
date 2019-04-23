@@ -154,7 +154,7 @@ public class dungeonLayout extends JFrame {
 	private void dungeonSizeLabelInitialize() {
 		dungeonSizeLabel = new JLabel();
 		dungeonSizeLabel.setBounds(40, 40, 150, 25);
-		dungeonSizeLabel.setText("地宮大小(高x深)：");
+		dungeonSizeLabel.setText("地宮大小(深x高)：");
 		dungeonSizeLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		dungeonSizeLabel.setVerticalAlignment(SwingConstants.CENTER);
 		dungeonSizeLabel.setFont(new Font("微軟正黑體", Font.PLAIN, 15));

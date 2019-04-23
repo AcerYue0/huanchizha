@@ -33,7 +33,6 @@
 		</list>
 		<list key="ImportExportPage.STORE_EXPANDED_EXPORT_CATEGORIES">
 			<item value="org.eclipse.jdt.ui.Java"/>
-			<item value="org.eclipse.pde.ui.PluginDevelopment"/>
 		</list>
 	</section>
 	<section name="ZipFileImportWizard">
