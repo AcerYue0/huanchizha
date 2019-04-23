@@ -14,6 +14,7 @@ public class Simulation {
 
 	private int hero;
 	private int dungeon[][];
+	private boolean isBackwardingWithRealMap = false;
 	
 	Simulation(int entranceState, DungeonState dungeonState, int heroCount){
 		this.entranceState = entranceState;
@@ -158,21 +159,49 @@ public class Simulation {
 		        NextBlock(fromX, fromY, toX, toY);
 		    } else {
 		    	if(inRange(k, 0, 2)) {
+		    		if(fromX == (dungeonX - 1) && isBackwardingWithRealMap) {
+		    			isBackwardingWithRealMap = false;
+		    		}
 	                NewX--;
 		    	} else if (inRange(k, 3, 4)) {
-	                NewY++;
+		    		if(NewY == 0) {
+		    			isBackwardingWithRealMap = false;
+		    		}
+		    		NewY = isBackwardingWithRealMap ? NewY - 1 : NewY + 1;
 		    	} else if (inRange(k, 5, 8)) {
+		    		if(fromX == 0 && isBackwardingWithRealMap) {
+		    			isBackwardingWithRealMap = false;
+		    		}
 	                NewX++;
 		    	}
 		    	if (toY == bossEntranceY && (toX == 0 || toX == (dungeonX - 1)) && (fromX == toX - 1 || fromX == toX + 1)) {
-		        	if(toX == 0) {
-		        		dungeon[toX][toY]++;
-		        		dungeon[toX][toY - 1]++;
-			        	NextBlock(0, toY - 1, toX + 1, toY - 1);
+	        		dungeon[toX][toY]++;
+	        		dungeon[toX][toY - 1]++;
+	        		isBackwardingWithRealMap = true;
+		    		if(toX == 0) {
+		        		int b = rnd.nextInt(2);
+		        		switch(b){
+		        		case 0:
+				        	NextBlock(0, toY - 1, toX, toY - 2);
+		        			break;
+		        		case 1:
+		        			isBackwardingWithRealMap = false;
+				        	NextBlock(0, toY - 1, toX + 1, toY - 1);
+		        			break;
+		        		}
 		        	} else if(toX == (dungeonX - 1)){
 		        		dungeon[toX][toY]++;
 		        		dungeon[toX][toY - 1]++;
-			        	NextBlock((dungeonX - 1), toY - 1, toX - 1, toY - 1);
+		        		int b = rnd.nextInt(2);
+		        		switch(b){
+		        		case 0:
+				        	NextBlock(toX, toY - 1, toX, toY - 2);
+		        			break;
+		        		case 1:
+		        			isBackwardingWithRealMap = false;
+				        	NextBlock(toX, toY - 1, toX - 1, toY - 1);
+		        			break;
+		        		}
 		        	}
 			    } else if(NewX == fromX && NewY == fromY) {
 		            NextBlock(fromX, fromY, toX, toY);
