@@ -4,11 +4,12 @@
 	<item key="org.eclipse.jdt.ui.last.external.project" value="D:\Code\github space\java\DM Probability Simulator"/>
 	<section name="FatJarPackageWizard">
 		<item key="FatJarPackageWizardPage.ANTSCRIPT_LOCATION" value="D:\Code\C\java.xml"/>
-		<item key="FatJarPackageWizardPage.LAUNCH_CONFIGURATION_SELECTION_NAME" value="dungeonLayout - DM Probability Simulator"/>
-		<item key="FatJarPackageWizardPage.DESTINATION_PATH_SELECTION" value="DM Probability Simulator\Dungeon Maker Probability Simulator.jar"/>
+		<item key="FatJarPackageWizardPage.LAUNCH_CONFIGURATION_SELECTION_NAME" value="Main - DMCalc"/>
+		<item key="FatJarPackageWizardPage.DESTINATION_PATH_SELECTION" value="D:\Dungeon Maker EXP Calculator.jar"/>
 		<item key="FatJarPackageWizardPage.ANTSCRIPT_SAVE" value="false"/>
 		<item key="FatJarPackageWizardPage.LIBRARY_HANDLING" value="1"/>
 		<list key="FatJarPackageWizardPage.DESTINATION_NAMES_ID">
+			<item value="D:\Dungeon Maker EXP Calculator.jar"/>
 			<item value="DM Probability Simulator\Dungeon Maker Probability Simulator.jar"/>
 			<item value="DM Probability Simulator/Dungeon Maker Probability Simulator.jar"/>
 			<item value="DMCalc/Dungeon Maker Exp Calculator.jar"/>
