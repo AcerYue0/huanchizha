@@ -1,12 +1,12 @@
 public class DungeonState {
-	private int depthX;
-	private int widthY;
+	private int depth;
+	private int width;
 	private char position;
 	private RelicState relicState; 
 	
-	public DungeonState(int depthX, int widthY, char position, RelicState relicState) {
-		this.depthX = depthX;
-		this.widthY = widthY;
+	public DungeonState(int depth, int width, char position, RelicState relicState) {
+		this.depth = depth;
+		this.width = width;
 		this.position = position;
 		this.relicState = relicState;
 	}
@@ -19,17 +19,17 @@ public class DungeonState {
 		this.relicState = relicState;
 	}
 
-	public int getDepthX() {
-		return depthX;
+	public int getDepth() {
+		return depth;
 	}
-	public void setDepthX(int depthX) {
-		this.depthX = depthX;
+	public void setDepthX(int depth) {
+		this.depth = depth;
 	}
-	public int getWidthY() {
-		return widthY;
+	public int getWidth() {
+		return width;
 	}
-	public void setWidthY(int widthY) {
-		this.widthY = widthY;
+	public void setWidthY(int width) {
+		this.width = width;
 	}
 	public char getPosition() {
 		return position;

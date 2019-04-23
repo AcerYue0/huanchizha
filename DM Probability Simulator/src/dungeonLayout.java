@@ -352,9 +352,9 @@ public class dungeonLayout extends JFrame {
 					dungeonState.setDepthX(Character.getNumericValue(item.charAt(1)));
 					dungeonState.setWidthY(Character.getNumericValue(item.charAt(3)));
 					dungeonState.setPosition((item.length() > 5) ? item.charAt(5) : 'M');
-					componentsSetNormalRoomStartX = 260 + (dungeonState.getDepthX() - 1) * 80;
-					componentsSetNormalRoomStartY = (dungeonState.getWidthY() == 3 || dungeonState.getPosition() == 'D'? 120 : 40);
-					normalRoomsInitialize(dungeonState.getWidthY(), dungeonState.getDepthX(), componentsSetNormalRoomStartX, componentsSetNormalRoomStartY);
+					componentsSetNormalRoomStartX = 260 + (dungeonState.getDepth() - 1) * 80;
+					componentsSetNormalRoomStartY = (dungeonState.getWidth() == 3 || dungeonState.getPosition() == 'D'? 120 : 40);
+					normalRoomsInitialize(dungeonState.getWidth(), dungeonState.getDepth(), componentsSetNormalRoomStartX, componentsSetNormalRoomStartY);
 			    }
 			}
 		});

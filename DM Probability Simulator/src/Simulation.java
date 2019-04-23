@@ -17,8 +17,8 @@ public class Simulation {
 	
 	Simulation(int entranceState, DungeonState dungeonState, int heroCount){
 		this.entranceState = entranceState;
-		this.dungeonX = dungeonState.getWidthY();
-		this.dungeonY = dungeonState.getDepthX();
+		this.dungeonX = dungeonState.getWidth();
+		this.dungeonY = dungeonState.getDepth();
 		this.dungeon = new int[dungeonX][dungeonY];
 		this.hero = heroCount;
 		setBossEntrance(dungeonState);
@@ -33,7 +33,7 @@ public class Simulation {
 			this.bossEntranceX = 1;
 			break;
 		}
-		switch(dungeonState.getWidthY()) {
+		switch(dungeonState.getWidth()) {
 		case 3:
 			this.bossEntranceX = 1;
 			break;
@@ -46,9 +46,9 @@ public class Simulation {
 	}
 
 	void startDungeonSimulating() {
-		//no relic 1, 1, 1, 1 (backward, left, forward, right)
-		//fake map 5, 6, 3, 6 (backward, left, right, forward)
-		//real map 0, 75, 50 , 75(backward, left, right, forward)
+		//no relic 1, 1, 1, 1 (right, forward, left, backward)
+		//fake map 6, 3, 6, 5 (right, forward, left, backward)
+		//real map 3, 2, 3, 0 (right, forward, left, backward)
 		if(entranceState == 1) {
 			for(int i = 0 ; i < hero; i++)
 		    {
@@ -120,22 +120,22 @@ public class Simulation {
 			k = rnd.nextInt(20);
 			if(toX == bossEntranceX && toY == bossEntranceY) {
 				dungeon[bossEntranceX][bossEntranceY]++;
-		    } else if(toX == 0 && k >= 0 && k <= 4) {
+		    } else if(toX == 0 && k >= 0 && k <= 5) {
 		        NextBlock(fromX, fromY, toX, toY);
-		    } else if(toY == (dungeonY - 1) && k >= 5 && k <= 10) {
+		    } else if(toY == (dungeonY - 1) && k >= 6 && k <= 8) {
 		        NextBlock(fromX, fromY, toX, toY);
-		    } else if(toX == (dungeonX - 1) && k >= 11 && k <= 13) {
+		    } else if(toX == (dungeonX - 1) && k >= 9 && k <= 14) {
 		        NextBlock(fromX, fromY, toX, toY);
-		    } else if(toY == 0 && k >= 14 && k <= 20) {
+		    } else if(toY == 0 && k >= 15 && k <= 20) {
 		        NextBlock(fromX, fromY, toX, toY);
 		    } else {
-		    	if(inRange(k, 0, 4)) {
+		    	if(inRange(k, 0, 5)) {
 	                NewX--;
-		    	} else if (inRange(k, 5, 10)) {
+		    	} else if (inRange(k, 6, 8)) {
 	                NewY++;
-		    	} else if (inRange(k, 11, 13)) {
+		    	} else if (inRange(k, 9, 14)) {
 	                NewX++;
-		    	} else if (inRange(k, 14, 20)) {
+		    	} else if (inRange(k, 15, 20)) {
 	                NewY--;
 		    	}
 		        if(NewX == fromX && NewY == fromY) {
@@ -147,32 +147,38 @@ public class Simulation {
 		    }
 			break;
 		case RealMap:
-			k = rnd.nextInt(200);
+			k = rnd.nextInt(8);
 			if(toX == bossEntranceX && toY == bossEntranceY) {
 				dungeon[bossEntranceX][bossEntranceY]++;
-		    } else if(toX == 0 && k >= 0 && k <= 4) {
+		    } else if(toX == 0 && k >= 0 && k <= 2) {
 		        NextBlock(fromX, fromY, toX, toY);
-		    } else if(toY == (dungeonY - 1) && k >= 5 && k <= 10) {
+		    } else if(toY == (dungeonY - 1) && k >= 3 && k <= 4) {
 		        NextBlock(fromX, fromY, toX, toY);
-		    } else if(toX == (dungeonX - 1) && k >= 11 && k <= 16) {
-		        NextBlock(fromX, fromY, toX, toY);
-		    } else if(toY == 0 && k >= 17 && k <= 20) {
+		    } else if(toX == (dungeonX - 1) && k >= 5 && k <= 8) {
 		        NextBlock(fromX, fromY, toX, toY);
 		    } else {
-		    	if(inRange(k, 0, 4)) {
+		    	if(inRange(k, 0, 2)) {
 	                NewX--;
-		    	} else if (inRange(k, 5, 10)) {
+		    	} else if (inRange(k, 3, 4)) {
 	                NewY++;
-		    	} else if (inRange(k, 11, 16)) {
+		    	} else if (inRange(k, 5, 8)) {
 	                NewX++;
-		    	} else if (inRange(k, 17, 20)) {
-	                NewY--;
 		    	}
-		        if(NewX == fromX && NewY == fromY) {
+		    	if (toY == bossEntranceY && (toX == 0 || toX == (dungeonX - 1)) && (fromX == toX - 1 || fromX == toX + 1)) {
+		        	if(toX == 0) {
+		        		dungeon[toX][toY]++;
+		        		dungeon[toX][toY - 1]++;
+			        	NextBlock(0, toY - 1, toX + 1, toY - 1);
+		        	} else if(toX == (dungeonX - 1)){
+		        		dungeon[toX][toY]++;
+		        		dungeon[toX][toY - 1]++;
+			        	NextBlock((dungeonX - 1), toY - 1, toX - 1, toY - 1);
+		        	}
+			    } else if(NewX == fromX && NewY == fromY) {
 		            NextBlock(fromX, fromY, toX, toY);
 		        } else {
-		        	dungeon[toX][toY]++;
-		            NextBlock(toX, toY, NewX, NewY);
+			        dungeon[toX][toY]++;
+			        NextBlock(toX, toY, NewX, NewY);
 		        }
 		    }
 			break;
@@ -184,7 +190,7 @@ public class Simulation {
 	void replaceProbebilityOf(JTextField[][] normalRoom) {
 		for(int i = 0; i < dungeonX; i++) {
 			for(int j = 0; j < dungeonY; j++) {
-				normalRoom[i][j].setText(String.valueOf((double)dungeon[i][j] / hero));
+				normalRoom[i][j].setText(String.format("%.3f", (double)dungeon[i][j] / hero));
 			}
 		}
 	}
