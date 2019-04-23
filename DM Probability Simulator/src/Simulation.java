@@ -6,18 +6,20 @@ public class Simulation {
 	
 	static Random rnd = new Random(System.currentTimeMillis());
 	private int entranceState;
-	private RelicState relicState;
+	private RelicState RelicState;
 	private int dungeonX;
 	private int dungeonY;
 	private int bossEntranceX;
-	private int bossEntranceY = 5;
+	private int bossEntranceY;
+
 	private int hero;
 	private int dungeon[][];
 	
 	Simulation(int entranceState, DungeonState dungeonState, int heroCount){
 		this.entranceState = entranceState;
-		this.dungeonX = dungeonState.getDepthX();
-		this.dungeonY = dungeonState.getWidthY();
+		this.dungeonX = dungeonState.getWidthY();
+		this.dungeonY = dungeonState.getDepthX();
+		this.dungeon = new int[dungeonX][dungeonY];
 		this.hero = heroCount;
 		setBossEntrance(dungeonState);
 	}
@@ -39,33 +41,34 @@ public class Simulation {
 			this.bossEntranceX = 2;
 			break;
 		}
+		this.bossEntranceY = dungeonY - 1;
+		this.RelicState = dungeonState.getRelicState();
 	}
 
 	void startDungeonSimulating() {
+		//no relic 1, 1, 1, 1 (backward, left, forward, right)
+		//fake map 5, 6, 3, 6 (backward, left, right, forward)
+		//real map 0, 75, 50 , 75(backward, left, right, forward)
 		if(entranceState == 1) {
-			switch(relicState) {
-			case NoRelic:
-				simulateOneEntrance();
-				break;
-			case FakeMap:
-				simulateOneEntranceWithFakeMap();
-				break;
-			case RealMap:
-				simulateOneEntranceWithRealMap();
-				break;
-			}
+			for(int i = 0 ; i < hero; i++)
+		    {
+		        NextBlock(-1, -1, bossEntranceX, 0);
+		    }
 		} else if(entranceState == 3) {
-			switch(relicState) {
-			case NoRelic:
-				simulateThreeEntrance();
-				break;
-			case FakeMap:
-				simulateThreeEntranceWithFakeMap();
-				break;
-			case RealMap:
-				simulateThreeEntranceWithRealMap();
-				break;
-			}
+			for(int i = 0 ; i < hero; i++)
+		    {
+				int s = rnd.nextInt(3) * 2;
+				switch(s) {
+				case 0:
+			        NextBlock(-1, -1, 0, 0);
+			        break;
+				case 2:
+			        NextBlock(-1, -1, bossEntranceX, 0);
+			        break;
+				case 4:
+			        NextBlock(-1, -1, dungeonX - 1, 0);
+				}
+		    }
 		}
 	}
 	
@@ -73,19 +76,19 @@ public class Simulation {
 		int k;
 		int NewX = toX;
 	    int NewY = toY;
-		switch(relicState) {
+		switch(RelicState) {
 		case NoRelic:
-			k = rnd.nextInt(4);//no relic 1, 1, 1, 1 (backward, left, forward, right)
+			k = rnd.nextInt(4);
 			//edge test
-			if(toX == 2 && toY == 0) {
+			if(toX == bossEntranceX && toY == bossEntranceY) {
 				dungeon[bossEntranceX][bossEntranceY]++;
 		    } else if(toX == 0 && k == 0) {
 		        NextBlock(fromX, fromY, toX, toY);
-		    } else if(toY == 0 && k == 3) {
+		    } else if(toY == (dungeonY - 1) && k == 1) {
 		        NextBlock(fromX, fromY, toX, toY);
 		    } else if(toX == (dungeonX - 1) && k == 2) {
 		        NextBlock(fromX, fromY, toX, toY);
-		    } else if(toY == (dungeonY - 1) && k == 1) {
+		    } else if(toY == 0 && k == 3) {
 		        NextBlock(fromX, fromY, toX, toY);
 		    } 
 			//try go to next room
@@ -114,16 +117,16 @@ public class Simulation {
 		    }
 			break;
 		case FakeMap:
-			k = rnd.nextInt(20);//fake map 5, 6, 3, 6 (backward, left, right, forward)
-			if(toX == 2 && toY == 0) {
-				dungeon[2][0]++;
+			k = rnd.nextInt(20);
+			if(toX == bossEntranceX && toY == bossEntranceY) {
+				dungeon[bossEntranceX][bossEntranceY]++;
 		    } else if(toX == 0 && k >= 0 && k <= 4) {
 		        NextBlock(fromX, fromY, toX, toY);
-		    } else if(toY == 0 && k >= 5 && k <= 10) {
+		    } else if(toY == (dungeonY - 1) && k >= 5 && k <= 10) {
 		        NextBlock(fromX, fromY, toX, toY);
 		    } else if(toX == (dungeonX - 1) && k >= 11 && k <= 13) {
 		        NextBlock(fromX, fromY, toX, toY);
-		    } else if(toY == (dungeonY - 1) && k >= 14 && k <= 20) {
+		    } else if(toY == 0 && k >= 14 && k <= 20) {
 		        NextBlock(fromX, fromY, toX, toY);
 		    } else {
 		    	if(inRange(k, 0, 4)) {
@@ -144,16 +147,16 @@ public class Simulation {
 		    }
 			break;
 		case RealMap:
-			k = rnd.nextInt(200);//real map 0, 75, 50 , 75(backward, left, right, forward)
-			if(toX == 2 && toY == 0) {
-				dungeon[2][0]++;
+			k = rnd.nextInt(200);
+			if(toX == bossEntranceX && toY == bossEntranceY) {
+				dungeon[bossEntranceX][bossEntranceY]++;
 		    } else if(toX == 0 && k >= 0 && k <= 4) {
 		        NextBlock(fromX, fromY, toX, toY);
-		    } else if(toY == 0 && k >= 5 && k <= 10) {
+		    } else if(toY == (dungeonY - 1) && k >= 5 && k <= 10) {
 		        NextBlock(fromX, fromY, toX, toY);
 		    } else if(toX == (dungeonX - 1) && k >= 11 && k <= 16) {
 		        NextBlock(fromX, fromY, toX, toY);
-		    } else if(toY == (dungeonY - 1) && k >= 17 && k <= 20) {
+		    } else if(toY == 0 && k >= 17 && k <= 20) {
 		        NextBlock(fromX, fromY, toX, toY);
 		    } else {
 		    	if(inRange(k, 0, 4)) {
@@ -173,36 +176,14 @@ public class Simulation {
 		        }
 		    }
 			break;
+		default:
+			System.out.println("No relic state found");	
 		}
 	}
 
-	private void simulateOneEntrance() {
-		
-	}
-	
-	private void simulateOneEntranceWithFakeMap() {
-		
-	}
-	
-	private void simulateOneEntranceWithRealMap() {
-		
-	}
-	
-	private void simulateThreeEntrance() {
-		
-	}
-	
-	private void simulateThreeEntranceWithFakeMap() {
-		
-	}
-	
-	private void simulateThreeEntranceWithRealMap() {
-		
-	}
-
 	void replaceProbebilityOf(JTextField[][] normalRoom) {
-		for(int i = 0; i < dungeonY; i++) {
-			for(int j = 0; j < dungeonX; j++) {
+		for(int i = 0; i < dungeonX; i++) {
+			for(int j = 0; j < dungeonY; j++) {
 				normalRoom[i][j].setText(String.valueOf((double)dungeon[i][j] / hero));
 			}
 		}

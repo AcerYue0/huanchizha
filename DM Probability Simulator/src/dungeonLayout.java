@@ -3,8 +3,17 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.InputMethodEvent;
+import java.awt.event.InputMethodListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
@@ -47,7 +56,7 @@ public class dungeonLayout extends JFrame {
 
 	private static JPanel main;
 	private static JTextField bossRoom;
-	private static JFormattedTextField heroValue = new JFormattedTextField(format);
+	private static JFormattedTextField heroValue;
 	private static JLabel heroValueLabel, dungeonSizeLabel, errorLabel, entranceCountLabel;
 	private static JTextField[][] normalRoom = new JTextField[5][6];
 	private static int componentsSetNormalRoomStartY, componentsSetNormalRoomStartX;
@@ -226,7 +235,11 @@ public class dungeonLayout extends JFrame {
 		JLabelInitialize(value);
 		componentsSetNormalRoomStartY = y;
 		for (JLabel i : dungeonEntrance) {
-			if (componentsSetNormalRoomStartY == 200) {
+			if (componentsSetNormalRoomStartY == 200 ||
+				entranceState == 3 && (
+					dungeonEntrance.indexOf(i) == 0 ||
+					dungeonEntrance.indexOf(i) == dungeonEntrance.size() - 1
+				)) {
 				setRedIcon(i);
 			} else {
 				setGrayIcon(i);
@@ -267,10 +280,12 @@ public class dungeonLayout extends JFrame {
 	}
 
 	private void heroValueTextBoxInitialize() {
+		heroValue = new JFormattedTextField(format);
 		heroValue.setBackground(Color.WHITE);
 		heroValue.setBounds(240, 490, 100, 25);
 		heroValue.setFont(new Font("微軟正黑體", Font.PLAIN, 13));
 		heroValue.setHorizontalAlignment(SwingConstants.RIGHT);
+		heroValue.setColumns(1);
 		main.add(heroValue);
 	}
 
@@ -362,18 +377,21 @@ public class dungeonLayout extends JFrame {
 	}
 
 	private void relicStateCheckListener(JRadioButton RadioButton) {
-		relicStateCheck.addItemListener(new ItemListener() {
+		RadioButton.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					switch(RadioButton.getText()) {
 					case "無神器":
+						System.out.println("set relic state to no relic");
 						dungeonState.setRelicState(RelicState.NoRelic);
 						break;
 					case "偽造地宮":
+						System.out.println("set relic state to fake map");
 						dungeonState.setRelicState(RelicState.FakeMap);
 						break;
 					case "真地宮":
+						System.out.println("set relic state to real map");
 						dungeonState.setRelicState(RelicState.RealMap);
 						break;
 					}
@@ -383,10 +401,17 @@ public class dungeonLayout extends JFrame {
 	}
 
 	private void dungeonSimulation() {
-		Simulation sim = new Simulation(entranceState, dungeonState, Integer.parseInt(heroValue.getText().replaceAll("[^0-9]", "")));
-		sim.startDungeonSimulating();
-		sim.replaceProbebilityOf(normalRoom);
-		errorLabel.setText("Simulate Complete.");
+		try {
+			if(Integer.parseInt(heroValue.getText().replaceAll("[^0-9]", "")) < 0) {
+				errorLabel.setText("Input must bigger than 0.");
+			}
+			Simulation sim = new Simulation(entranceState, dungeonState, Integer.parseInt(heroValue.getText().replaceAll("[^0-9]", "")));
+			sim.startDungeonSimulating();
+			sim.replaceProbebilityOf(normalRoom);
+			errorLabel.setText("Simulate Complete.");
+		} catch (NumberFormatException e) {
+			errorLabel.setText("Please input numberic value.");
+		}
 	}
 
 	private void setGrayIcon(JLabel Label) {
