@@ -47,17 +47,12 @@ public class Simulation {
 	}
 
 	void startDungeonSimulating() {
-		//no relic 1, 1, 1, 1 (right, forward, left, backward)
-		//fake map 6, 3, 6, 5 (right, forward, left, backward)
-		//real map 3, 2, 3, 0 (right, forward, left, backward)
 		if(entranceState == 1) {
-			for(int i = 0 ; i < hero; i++)
-		    {
+			for(int i = 0 ; i < hero; i++){
 		        NextBlock(-1, -1, bossEntranceX, 0);
 		    }
 		} else if(entranceState == 3) {
-			for(int i = 0 ; i < hero; i++)
-		    {
+			for(int i = 0 ; i < hero; i++){
 				int s = rnd.nextInt(3) * 2;
 				switch(s) {
 				case 0:
@@ -74,6 +69,9 @@ public class Simulation {
 	}
 	
 	private void NextBlock(int fromX, int fromY, int toX, int toY) {
+		//no relic 1, 1, 1, 1 (right, forward, left, backward)
+		//fake map 6, 3, 6, 5 (right, forward, left, backward)
+		//real map 3, 2, 3, 0 (right, forward, left, backward)
 		int k;
 		int NewX = toX;
 	    int NewY = toY;
@@ -212,7 +210,7 @@ public class Simulation {
 		    }
 			break;
 		default:
-			System.out.println("No relic state found");	
+			throw new Error("Not Reached");	
 		}
 	}
 

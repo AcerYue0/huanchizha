@@ -82,11 +82,7 @@ public class dungeonLayout extends JFrame {
 		});
 	}
 
-	public dungeonLayout() throws IOException {
-		componentsInitialize();
-	}
-
-	private void componentsInitialize() throws IOException {
+	public dungeonLayout() {
 		contentPaneInitialize();
 		bossRoomInitialize();
 		normalRoomsInitialize(5, 6, 660, 40);
@@ -104,6 +100,13 @@ public class dungeonLayout extends JFrame {
 		relicStateCheckInitialize();
 		relicCheckGroupInitialize();
 		reportBugsToInitialize();
+	}
+
+	private void relicCheckGroupInitialize() {
+		relicCheckGroup.add(relicFakeMapCheck);
+		relicCheckGroup.add(relicRealMapCheck);
+		relicCheckGroup.add(relicStateCheck);
+		relicCheckGroup.setSelected(relicStateCheck.getModel(), true);
 	}
 
 	private void relicRealMapCheckInitialize() {
@@ -131,13 +134,6 @@ public class dungeonLayout extends JFrame {
 		relicStateCheck.setAlignmentX(RIGHT_ALIGNMENT);
 		relicStateCheck.setBackground(Color.WHITE);
 		main.add(relicStateCheck);
-	}
-
-	private void relicCheckGroupInitialize() {
-		relicCheckGroup.add(relicFakeMapCheck);
-		relicCheckGroup.add(relicRealMapCheck);
-		relicCheckGroup.add(relicStateCheck);
-		relicCheckGroup.setSelected(relicStateCheck.getModel(), true);
 	}
 
 	private void contentPaneInitialize() {
@@ -446,8 +442,8 @@ public class dungeonLayout extends JFrame {
 	private void setIcon(URL image) {
 		try {
 			buttonIcon = ImageIO.read(image);
-		} catch (IOException e1) {
-			System.out.println("No such file found, please contact us to fix out.");
+		} catch(IOException e1) {
+			throw new Error("No such file found, please contact us to fix out.");
 		}
 	}
 }
