@@ -354,7 +354,10 @@ public class Main extends JFrame {
 	public void targetPanelActivity() {
 		for (int i = (int) nLevel; i < (int) tLevel; i++) {
 			scoreRequire = (((75 * Math.pow(i - 1, 2)) + (250 * (i - 1)) + 250) * ((float) (100 - nPercent) / 100))
-					+ nLevel + i > 3000 ? 250 + nLevel * (250 + nLevel * 75) + (Math.pow(nLevel, 3) * (nLevel - 3000) * 0.001) : 0;
+					+ (levelUp > 3000
+							? (250 + nLevel * (250 + nLevel * 75) + (Math.pow(nLevel, 3) * (nLevel - 3000) * 0.001))
+									* 0.75
+							: 0);
 			sum += scoreRequire;
 			nPercent = 0;
 		}
@@ -366,17 +369,22 @@ public class Main extends JFrame {
 	// Calculate for leveling
 	private void levelUpPanelActivity() {
 		scoreRequire = (((75 * Math.pow(nLevel - 1, 2)) + (250 * (nLevel - 1)) + 250)
-				* ((100 - (float) nPercent) / 100)) + nLevel + levelUp > 3000
-						? 250 + nLevel * (250 + nLevel * 75) + (Math.pow(nLevel, 3) * (nLevel - 3000) * 0.001)
-						: 0;// Formula
+				* ((100 - (float) nPercent) / 100))
+				+ nLevel
+				+ (levelUp > 3000
+						? (250 + nLevel * (250 + nLevel * 75) + (Math.pow(nLevel, 3) * (nLevel - 3000) * 0.001)) * 0.75
+						: 0);// Formula
 		while (scoreRequire - score <= 0) {
 			score -= scoreRequire;
 			levelUp++;
 			nPercent = 0;
 			scoreRequire = (((75 * Math.pow(nLevel + levelUp - 1, 2)) + (250 * (nLevel + levelUp - 1)) + 250)
-					* ((float) (100 - nPercent) / 100)) + nLevel + levelUp > 3000
-							? 250 + nLevel * (250 + nLevel * 75) + (Math.pow(nLevel, 3) * (nLevel - 3000) * 0.001)
-							: 0;
+					* ((float) (100 - nPercent) / 100))
+					+ nLevel
+					+ (levelUp > 3000
+							? (250 + nLevel * (250 + nLevel * 75) + (Math.pow(nLevel, 3) * (nLevel - 3000) * 0.001))
+									* 0.75
+							: 0);
 		}
 		// Output
 		if (nLevel + levelUp >= 3001) {
