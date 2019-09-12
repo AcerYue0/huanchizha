@@ -11,6 +11,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.NumberFormat;
 
+import javax.swing.JApplet;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
@@ -22,6 +23,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import java.awt.Font;
 import java.awt.event.ActionListener;
@@ -29,29 +31,29 @@ import java.awt.event.ActionEvent;
 import javax.swing.JTabbedPane;
 
 @SuppressWarnings("serial")
-public class Main extends JFrame {
+public class Main extends JApplet {
 	// Variable declare
-	static long levelUp, nLevel, nPercent, tLevel, score;
-	static double sum, scoreRequire;
+	static long levelUp, nLevel, nPercent, tLevel;
+	static double sum, scoreRequire, score;
 	static int errorBiggerThanZero, errorMessage;
 
-	// Address URL string
+	static // Address URL string
 	String address = "leeyuchin2618005@gmail.com";
 
 	// Components declare
 	static int languageCode = 1;
-	private String[] languageString = { "中文", "English", "日本語" };
+	private static String[] languageString = { "中文", "English", "日本語" };
 	static String[] languageLabelText = { "語言：", "Choose Language:", "言語：" };
-	private JPanel MenuFrame;
-	private JLabel languageLabel, levelLabel, expLabel, targetLabel, scoreLabel;
-	private JTextArea resultLabel;
+	private static JPanel MenuFrame;
+	private static JLabel languageLabel, levelLabel, expLabel, targetLabel, scoreLabel;
+	private static JTextArea resultLabel;
 	@SuppressWarnings("rawtypes")
-	private JComboBox languageList;
-	private JButton calcBtn;
-	private JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-	JPanel targetLevelPanel = new JPanel();
-	JPanel levelUpPanel = new JPanel();
-	private JFormattedTextField nLevelInput, nExpInput, tLevelInput, scoreInput;
+	private static JComboBox languageList;
+	private static JButton calcBtn;
+	private static JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+	static JPanel targetLevelPanel = new JPanel();
+	static JPanel levelUpPanel = new JPanel();
+	private static JFormattedTextField nLevelInput, nExpInput, tLevelInput, scoreInput;
 
 	// String declare {Chinese, English, Japanese}
 	static String[] levelLabelText = { "當前等級：", "Current Level:", "現在のレベル：" };
@@ -63,38 +65,66 @@ public class Main extends JFrame {
 	static String[] targetLevelOutputString2 = { "分", "pt.", "ptくらいです。" };
 	static String[] targetPanelString = { "目標等級", "Target Level", "狙いレベル" };
 	static String[] levelUpPanelString = { "提升等級", "Level Up", "レベル上がる" };
-	static String[] levelUpOutputReachMaxLevel = { String.format("到達4000等！\n這是目前版本的最高重生等級囉"),
-			String.format("Reach level 4000! \nThis is the highest rebirth level of the current version."),
-			String.format("レベル4000に到着しました！\nこれは現在のバージョンの最高の再生レベルです") };
+	static String[] levelUpOutputReachMaxLevel = { String.format("到達5000等！\n這是目前版本的最高重生等級囉"),
+			String.format("Reach level 5000! \nThis is the highest rebirth level of the current version."),
+			String.format("レベル5000に到着しました！\nこれは現在のバージョンの最高の再生レベルです") };
 	static String[] levelUpOutputString1 = { "結算後提升", "Increase ", "決済後、" };
 	static String[] levelUpOutputString2 = { String.format("等\n並距離下個等級約"),
 			String.format(" levels after settlement,\nAnd about "), String.format("レベルを追加しました。\nつきのレベルとの差は") };
 	static String[] levelUpOutputString3 = { String.format("%%"), String.format("%% to the next level."),
 			String.format("%%くらいです。") };
-
+    
 	// TextBox format
 	static NumberFormat format = NumberFormat.getNumberInstance();
 
+	private void createGUI()
+    {
+        JLabel appletLabel = new JLabel( "I'm a Swing Applet" );
+        appletLabel.setHorizontalAlignment( JLabel.CENTER );
+        appletLabel.setFont(new Font("Serif", Font.PLAIN, 36));
+        add( appletLabel );
+        setSize(400, 200);
+    }
+
+    @Override
+    public void init()
+    {
+        try
+        {
+            SwingUtilities.invokeAndWait(new Runnable()
+            {
+                public void run()
+                {
+                    createGUI();
+                }
+            });
+        }
+        catch (Exception e)
+        {
+            System.err.println("createGUI didn't successfully complete: " + e);
+        }
+    }
+    
 	// Run application
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Main frame = new Main();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+		JApplet applet = new JApplet();
+        applet.init();
+        
+        JFrame frame = new JFrame("Applet in Frame");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.add( applet );
+        frame.pack();
+        frame.setLocationRelativeTo( null );
+        frame.setVisible( true );
+
+        MainComponentsSetting();
+		
+		applet.start();
 	}
 
 	// Main frame setting
-	public void setMainFrame() {
-		setTitle("Dungeon Maker Exp Calculator");
-		setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 600, 450);
+	public static void setMainFrame() {
+		MenuFrame.setBounds(100, 100, 600, 450);
 		MenuFrame = new JPanel();
 		MenuFrame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		MenuFrame.setRequestFocusEnabled(false);
@@ -104,7 +134,6 @@ public class Main extends JFrame {
 		tabbedPane.setBounds(0, 39, 584, 28);
 		tabbedPane.setFont(new Font("微軟正黑體", Font.PLAIN, 15));
 		MenuFrame.add(tabbedPane);
-		setContentPane(MenuFrame);
 	}
 
 	/**
@@ -112,7 +141,7 @@ public class Main extends JFrame {
 	 */
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Main() {
+	public static void MainComponentsSetting() {
 
 		setMainFrame();
 
@@ -297,12 +326,12 @@ public class Main extends JFrame {
 						tLevel = Long.parseLong(tLevelInput.getText().replace(",", ""));
 						if (tLevel < 0) {
 							errorBiggerThanZero += 4;
-						} else if (tLevel > 4000) {
+						} else if (tLevel > 5000) {
 							flag = 1;
 						}
 						break;
 					case 1:
-						score = Long.parseLong(scoreInput.getText().replace(",", ""));
+						score = Double.parseDouble(scoreInput.getText().replace(",", ""));
 						if (score < 0) {
 							errorBiggerThanZero += 4;
 						}
@@ -318,9 +347,9 @@ public class Main extends JFrame {
 						if (flag == 0) {
 							targetPanelActivity();
 						} else {
-							resultLabel.setText(languageCode == 0 ? "目標等級不能超過3001。"
-									: languageCode == 1 ? "Target level cannot bigger than 3001."
-											: "狙いレベル3001超えるには入力できません。");
+							resultLabel.setText(languageCode == 0 ? "目標等級不能超過5001。"
+									: languageCode == 1 ? "Target level cannot bigger than 5001."
+											: "狙いレベル5001超えるには入力できません。");
 						}
 						break;
 					case 1:
@@ -351,47 +380,32 @@ public class Main extends JFrame {
 	}
 
 	// Calculate for target level
-	public void targetPanelActivity() {
+	public static void targetPanelActivity() {
 		for (int i = (int) nLevel; i < (int) tLevel; i++) {
-			scoreRequire = (((75 * Math.pow(i - 1, 2)) + (250 * (i - 1)) + 250) * ((float) (100 - nPercent) / 100))
-					+ (levelUp > 3000
-							? (250 + nLevel * (250 + nLevel * 75) + (Math.pow(nLevel, 3) * (nLevel - 3000) * 0.001))
-									* 0.75
-							: 0);
+			scoreRequire = (250 + (i - 1) * (250 + (i - 1) * 75) + (((i - 1) <= 3000) ? 0 : (((double)Math.pow((i - 1), 3f) * (double)((i - 1) - 3000) * 0.00025)))) * ((100 - (double) nPercent) / 100);
 			sum += scoreRequire;
 			nPercent = 0;
 		}
 		// Output
 		resultLabel.setText(
-				targetLevelOutputString1[languageCode] + Math.round(sum) + targetLevelOutputString2[languageCode]);
+				targetLevelOutputString1[languageCode] + NumberFormat.getInstance().format(Math.round(sum)) + targetLevelOutputString2[languageCode]);
 	}
 
 	// Calculate for leveling
-	private void levelUpPanelActivity() {
-		scoreRequire = (((75 * Math.pow(nLevel - 1, 2)) + (250 * (nLevel - 1)) + 250)
-				* ((100 - (float) nPercent) / 100))
-				+ nLevel
-				+ (levelUp > 3000
-						? (250 + nLevel * (250 + nLevel * 75) + (Math.pow(nLevel, 3) * (nLevel - 3000) * 0.001)) * 0.75
-						: 0);// Formula
+	private static void levelUpPanelActivity() {
+		scoreRequire = (250 + (nLevel - 1) * (250 + (nLevel - 1) * 75) + (((nLevel - 1) <= 3000) ? 0 : (((double)Math.pow((nLevel - 1), 3f) * (double)((nLevel - 1) - 3000) * 0.00025)))) * ((100 - (double) nPercent) / 100);// Formula
 		while (scoreRequire - score <= 0) {
 			score -= scoreRequire;
 			levelUp++;
 			nPercent = 0;
-			scoreRequire = (((75 * Math.pow(nLevel + levelUp - 1, 2)) + (250 * (nLevel + levelUp - 1)) + 250)
-					* ((float) (100 - nPercent) / 100))
-					+ nLevel
-					+ (levelUp > 3000
-							? (250 + nLevel * (250 + nLevel * 75) + (Math.pow(nLevel, 3) * (nLevel - 3000) * 0.001))
-									* 0.75
-							: 0);
+			scoreRequire = 250 + ((nLevel - 1) + levelUp) * (250 + ((nLevel - 1) + levelUp) * 75) + ((((nLevel - 1) + levelUp) <= 3000) ? 0 : (((double)Math.pow(((nLevel - 1) + levelUp), 3f) * (double)(((nLevel - 1) + levelUp) - 3000) * 0.00025)));
 		}
 		// Output
-		if (nLevel + levelUp >= 3001) {
+		if (nLevel + levelUp > 5000) {
 			resultLabel.setText(levelUpOutputReachMaxLevel[languageCode]);
 		} else {
 			resultLabel.setText(levelUpOutputString1[languageCode] + levelUp + levelUpOutputString2[languageCode]
-					+ Math.round((1 - ((double) score / scoreRequire)) * 100) + levelUpOutputString3[languageCode]);
+					+ Math.round((1 - (score / scoreRequire)) * 100) + levelUpOutputString3[languageCode]);
 		}
 	}
 
@@ -405,7 +419,7 @@ public class Main extends JFrame {
 	static String[] biggerThanZero = { "應大於0。", " cannot enter a number less than 0.", "0未満は入力できません。" };
 
 	// Error logic
-	private void result() {
+	private static void result() {
 		switch (tabbedPane.getSelectedIndex()) {
 		case 0:
 			fLevelError();
@@ -417,7 +431,7 @@ public class Main extends JFrame {
 	}
 
 	// Score error function
-	private void fScoreError() {
+	private static void fScoreError() {
 		switch (errorMessage) {
 		case 1:
 			resultLabel.setText(levelError[languageCode][0] + levelError[languageCode][3] + "\n");
@@ -479,7 +493,7 @@ public class Main extends JFrame {
 	}
 
 	// Leveling error function
-	private void fLevelError() {
+	private static void fLevelError() {
 		switch (errorMessage) {
 		case 1:
 			resultLabel.setText(targetError[languageCode][0] + targetError[languageCode][3] + "\n");
@@ -542,7 +556,7 @@ public class Main extends JFrame {
 	}
 
 	// Language change with changing code
-	protected void languageChange(int language) {
+	protected static void languageChange(int language) {
 		languageLabel.setText(languageLabelText[language]);
 		calcBtn.setText(calcBtnText[language]);
 		levelLabel.setText(levelLabelText[language]);
